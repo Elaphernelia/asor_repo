@@ -7,7 +7,11 @@
 
 int main(int argc, char *argv[]) {
    if (setuid(0) == -1){
-       perror("ERROR.");
+       printf("ERROR.\n");
+       fprintf(stderr, "%s", strerror(errno));
+       printf ("\n");
+       fprintf(stderr, "%d", errno);
+       printf("\n");
    }
    return 1;
 }
