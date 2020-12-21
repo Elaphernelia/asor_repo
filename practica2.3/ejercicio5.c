@@ -9,10 +9,10 @@ int main(){
     char dire[50]; 
     struct rlimit lim_;
      
-    p_id=getpid();  
-    p_pid=getppid(); 
-    p_gid=getpgid(p_id);
-    s_id=getsid(p_id);
+    p_id = getpid();  
+    p_pid = getppid(); 
+    p_gid = getpgid(p_id);
+    s_id = getsid(p_id);
     if (getcwd(dire, 50)==NULL){perror("ERANGE.");}
     if( getrlimit(RLIMIT_NPROC, &lim_) == 0) {
         
