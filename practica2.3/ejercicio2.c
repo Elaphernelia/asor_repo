@@ -7,7 +7,7 @@ int main(){
     op = sched_getscheduler(0);
     switch(op){
         case SCHED_OTHER: printf("politica estandar\n");break;
-        case SCHED_FIFO: printf("politica FIFO\n");break;
+        case SCHED_FIFO: printf("politica \n");break;
         case SCHED_RR: printf("polírica round robin\n");break;
     }
 
