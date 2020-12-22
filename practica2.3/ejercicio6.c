@@ -34,6 +34,12 @@ int main(){
     printf("ID grupo de procesos: %d\n", p_gid);
     printf("ID de sesion: %d\n", sid);
     printf("directorio de trabajo: %s\n", dire);
+    
+    /*
+    Si acaba antes el padre, el demonio se queda huérfano
+    y el ppid es igual que el proceso init, 1.
+
+    */
 
     return 0;
 }
