@@ -7,6 +7,7 @@ int main (int argc, char *argv[]) {
    /*Es más eficaz pasar los argumentos así:
    ./ejecuta "ps -el"
    */
+<<<<<<< HEAD
     int pid;
     int status;
     pid = fork(); 
@@ -30,6 +31,10 @@ int main (int argc, char *argv[]) {
            printf("El comando terminó de ejecutarse\n");
         }
     }
+=======
+   execvp(argv[1],argv); 
+   printf("El comando terminó de ejecutarse\n");
+>>>>>>> 075305ec2241f3b2c83ad4f162bbd9b16873c93e
 
    return(0);
 } 
