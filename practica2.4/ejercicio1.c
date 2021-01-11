@@ -8,7 +8,7 @@ int main(int argc, char *argv[]){
 
     pipe(fd);
 
-    pid_t pid = fork(); //demonio
+    pid_t pid = fork(); 
 
     if (pid < 0){
     printf("Error fork\n");
