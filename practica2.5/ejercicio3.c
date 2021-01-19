@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
     }
 
      if(close(sd) == -1){
-        perror("Error close()");
+        perror("ERROR CLOSE");
     }
    
 

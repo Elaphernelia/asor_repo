@@ -14,16 +14,26 @@ int main(int argc, char *argv[]){
     struct addrinfo hints;
     struct addrinfo* result;
     char buf[100];
-    char host[NI_MAXHOST]; //constantes ya dadas
-    char serv[NI_MAXSERV];
-    struct sockaddr_storage client_addr;
-    socklen_t client_addrlen = sizeof(client_addr);
     
+
     memset(&hints, 0, sizeof(struct addrinfo));
 
     hints.ai_flags    = AI_PASSIVE;
     hints.ai_family   = AF_UNSPEC;  
     hints.ai_socktype = SOCK_DGRAM;
+
+    //sacar la hora
+        time_t tim;
+        struct tm *localtim;
+        size_t bytes;
+        setlocale(LC_ALL, "es_ES");
+        if(time(&tim) != (time_t)-1){
+            localtim = localtime(&tim);
+            if (localtim == NULL){
+                perror("ERROR TIME\n");
+            }
+        }
+    //
 
     if (getaddrinfo(argv[1], argv[2], &hints, &result) !=0){
         perror("ERROR\n");
@@ -39,73 +49,33 @@ int main(int argc, char *argv[]){
         perror("ERROR BIND\n");
     }
 
-    fd_set read_fd;
-    FD_ZERO(&read_fd);
-    FD_SET(sd, &read_fd);
-    FD_SET(0, &read_fd);
-    int choice;
+    pid_t children[5];
+    int i;
 
-    while (1) {
+    //5= numero de hijos que puede haber
+    for (i = 0; i < 5; i++){
+        pid_t pid;
+        pid = fork();
+        if (pid == 0){
+            children[i] = pid;
 
-        choice = select(sd + 1, &read_fd, NULL, NULL, NULL);
-        if (choice == -1){
-            perror("ERROR SELECT\n");
-        }
-        else{
-            //sacar hora
-            time_t tim;
-                struct tm *localtim;
-                size_t bytes;
-                setlocale(LC_ALL, "es_ES");
-                if(time(&tim) != (time_t)-1){
-                    localtim = localtime(&tim);
-                    if (localtim == NULL){
-                        perror("ERROR TIME\n");
-                    }
-                }
-            //
+            while (1) {
+                char host[NI_MAXHOST]; //constantes ya dadas
+                char serv[NI_MAXSERV];
 
-            if (FD_ISSET(0, &read_fd)){
-                read(0, buf, 2);
+                struct sockaddr_storage client_addr;
+                socklen_t client_addrlen = sizeof(client_addr);
 
-                buf[1] = '\0';
-
-                printf("Mensaje de stdin\n");
-                switch(buf[0]){
-                    case 't': 
-                    bytes = strftime(buf, sizeof(buf), "%I:%M:%S %p", localtim);
-                    printf("%s\n", buf);
-                    break;
-
-                    case 'd': 
-                    bytes = strftime(buf, sizeof(buf), "%Y-%m-%d", localtim);
-                    printf("%s\n", buf);
-                    break;
-
-                    case 'q': 
-                    printf("Saliendo...\n");
-                    exit(0);
-                    break;
-
-                    default: printf("Comando no soportado %d \n", buf[0]);
-                    break;
-                }
-
-            }
-
-
-            else if(FD_ISSET(sd, &read_fd)){
                 int c = recvfrom(sd, buf, 100, 0, (struct sockaddr *) &client_addr, &client_addrlen);
-
                 buf[c] = '\0';
-
                 if (getnameinfo((struct sockaddr *) &client_addr, client_addrlen, host, NI_MAXHOST,
                     serv, NI_MAXSERV, NI_NUMERICHOST|NI_NUMERICSERV)!=0){
                         perror("ERROR GETNAMEINFO\n");
                     }
 
-                printf("Mensaje de %s:%s\n", host, serv);
+                printf("Mensaje de %s:%s, proceso %d\n", host, serv, getpid());
 
+                
                 switch(buf[0]){
                     case 't': 
                     bytes = strftime(buf, sizeof(buf), "%I:%M:%S %p", localtim);
@@ -125,13 +95,15 @@ int main(int argc, char *argv[]){
                     default: printf("Comando no soportado %d \n", buf[0]);
                     break;
                 }
+
             }
         }
-        
-
-        
-
     }
+
+    for (i = 0; i < 5; i++){
+        wait(&children[i]);
+    }
+
     if(close(sd) == -1){
         perror("ERROR CLOSE");
     }
