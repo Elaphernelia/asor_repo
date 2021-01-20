@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
     if (bind(sd, result->ai_addr, result->ai_addrlen)!=0){
         perror("ERROR BIND\n");
     }
-
+    freeaddrinfo(result);//liberar memoria
     pid_t children[5];
     int i;
 

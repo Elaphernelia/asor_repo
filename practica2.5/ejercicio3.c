@@ -35,6 +35,7 @@ int main(int argc, char *argv[]){
     if (sendto(sd, argv[3], 1, 0, result->ai_addr, result->ai_addrlen)== -1){
         perror("ERROR SENDTO\n");
     }
+    freeaddrinfo(result);//liberar memoria
 
 
     if (*argv[3] == 'd' || *argv[3] == 't'){

@@ -35,6 +35,7 @@ int main(int argc, char *argv[]){
     if (bind(sd, result->ai_addr, result->ai_addrlen)!=0){
         perror("ERROR BIND\n");
     }
+    freeaddrinfo(result);//liberar memoria
 
     while (1) {
         char host[NI_MAXHOST]; //constantes ya dadas
