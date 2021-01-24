@@ -6,15 +6,12 @@
 #include <sys/types.h>
 #include <locale.h>
 
-#define NI_MAXHOST 1025
-#define NI_MAXSERV 32
 
 int main(int argc, char *argv[]){
     struct addrinfo hints;
     struct addrinfo* result;
     char buf[100];
-    char host[NI_MAXHOST];
-    char serv[NI_MAXSERV];
+
     socklen_t selen = sizeof(struct sockaddr_storage);
     
 
