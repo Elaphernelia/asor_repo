@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
                 buf[c] = '\0';
                 send(client_sd, buf, c, 0);
             }
-            printf("Conexion terminada\n");
+            printf("Conexion terminada de %s:%s\n", host, serv);
         }
         
         else{
